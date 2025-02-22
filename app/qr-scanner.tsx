@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/router";
 import { Html5Qrcode } from "html5-qrcode";
 import {
   Card,
@@ -13,17 +14,18 @@ import { Button } from "@/components/ui/button";
 import { Camera, XCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-export default function QRScanner() {
+const QRScanner = () => {
+  const scannerRef = useRef<Html5Qrcode | null>(null);
+  const hasScannedRef = useRef(false);
   const [isScanning, setIsScanning] = useState(false);
   const [permissionState, setPermissionState] = useState<
     "prompt" | "granted" | "denied"
   >("prompt");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const scannerRef = useRef<Html5Qrcode | null>(null);
-  const hasScannedRef = useRef(false);
+  const router = useRouter();
 
   useEffect(() => {
-    checkCameraPermission();
+    checkPermission();
     return () => {
       if (scannerRef.current && isScanning) {
         scannerRef.current.stop().catch(console.error);
@@ -31,7 +33,7 @@ export default function QRScanner() {
     };
   }, [isScanning]);
 
-  const checkCameraPermission = async () => {
+  const checkPermission = async () => {
     try {
       const result = await navigator.permissions.query({
         name: "camera" as PermissionName,
@@ -109,6 +111,7 @@ export default function QRScanner() {
       hasScannedRef.current = true;
       sendToWhatsApp(result);
       await stopScanning();
+      router.push("/");
     }
   }
 
@@ -193,4 +196,6 @@ export default function QRScanner() {
       </CardFooter>
     </Card>
   );
-}
+};
+
+export default QRScanner;
