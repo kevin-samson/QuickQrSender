@@ -104,17 +104,34 @@ export default function QRScanner() {
     }
   };
 
-  function onScanSuccess(result: string) {
+  async function onScanSuccess(result: string) {
     if (!hasScannedRef.current) {
       hasScannedRef.current = true;
       sendToWhatsApp(result);
-      stopScanning();
+      await stopScanning();
     }
   }
 
   function onScanError(err: any) {
     console.warn(err);
   }
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        hasScannedRef.current = false;
+        startScanning();
+      } else {
+        stopScanning();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
 
   const sendToWhatsApp = (scanResult: string) => {
     const savedConfig = localStorage.getItem("qrScannerConfig");
