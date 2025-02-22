@@ -2,7 +2,13 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Html5Qrcode } from "html5-qrcode";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Camera, XCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -161,6 +167,13 @@ export default function QRScanner() {
           )}
         </div>
       </CardContent>
+      <CardFooter>
+        {isScanning && (
+          <p className="text-center">
+            Click on stop scanning after sending the QR code
+          </p>
+        )}
+      </CardFooter>
     </Card>
   );
 }

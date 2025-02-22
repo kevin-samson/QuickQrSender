@@ -1,6 +1,7 @@
-import Link from "next/link"
-import QRScanner from "./qr-scanner"
-import { Button } from "@/components/ui/button"
+import Link from "next/link";
+import QRScanner from "./qr-scanner";
+import { Button } from "@/components/ui/button";
+import { Github } from "lucide-react";
 
 export default function Home() {
   return (
@@ -12,7 +13,18 @@ export default function Home() {
           <Button variant="outline">Configure</Button>
         </Link>
       </div>
+      <footer className="mt-8 text-center">
+        <p className="text-sm">Kevin Samson</p>
+        <a
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center mt-2"
+        >
+          <Github className="mr-2" />
+          GitHub
+        </a>
+      </footer>
     </main>
-  )
+  );
 }
-
