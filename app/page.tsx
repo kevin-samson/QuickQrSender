@@ -14,9 +14,9 @@ export default function Home() {
         </Link>
       </div>
       <footer className="mt-8 text-center">
-        <p className="text-sm">Kevin Samson</p>
+        <p className="text-sm">Made with ❤️ by Kevin Samson</p>
         <a
-          href="#"
+          href="https://github.com/kevin-samson/QuickQrSender"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center mt-2"

@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Html5Qrcode } from "html5-qrcode";
 import {
   Card,
@@ -22,8 +21,7 @@ const QRScanner = () => {
     "prompt" | "granted" | "denied"
   >("prompt");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const router = useRouter();
-
+  const [whatsappLink, setWhatsappLink] = useState<string | null>(null);
   useEffect(() => {
     checkPermission();
     return () => {
@@ -94,11 +92,11 @@ const QRScanner = () => {
     }
   };
 
-  const stopScanning = async () => {
-    if (scannerRef.current && isScanning) {
+  const stopScanning = () => {
+    if (isScanning) {
       try {
-        await scannerRef.current.stop();
         setIsScanning(false);
+        setWhatsappLink(null);
       } catch (error) {
         console.error("Error stopping scanner:", error);
         setErrorMessage("Failed to stop the scanner. Please refresh the page.");
@@ -110,31 +108,12 @@ const QRScanner = () => {
     if (!hasScannedRef.current) {
       hasScannedRef.current = true;
       sendToWhatsApp(result);
-      await stopScanning();
-      router.push("/");
     }
   }
 
   function onScanError(err: any) {
     console.warn(err);
   }
-
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "visible") {
-        hasScannedRef.current = false;
-        startScanning();
-      } else {
-        stopScanning();
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, []);
 
   const sendToWhatsApp = (scanResult: string) => {
     const savedConfig = localStorage.getItem("qrScannerConfig");
@@ -148,8 +127,9 @@ const QRScanner = () => {
         )}`;
       }
     }
-
     window.open(whatsappUrl, "_blank");
+
+    setWhatsappLink(whatsappUrl);
   };
 
   return (
@@ -165,7 +145,8 @@ const QRScanner = () => {
               onClick={stopScanning}
               className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10"
             >
-              <XCircle className="mr-2 h-4 w-4" /> Stop Scanning
+              <XCircle className="mr-2 h-4 w-4" />{" "}
+              {whatsappLink ? "Restart" : "Stop Scanning"}
             </Button>
           )}
         </div>
@@ -188,10 +169,17 @@ const QRScanner = () => {
         </div>
       </CardContent>
       <CardFooter>
-        {isScanning && (
-          <p className="text-center">
-            Click on stop scanning after sending the QR code
-          </p>
+        {whatsappLink && (
+          <div className="text-center mt-4">
+            <a
+              href={whatsappLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 underline text-center"
+            >
+              Click to open in WhatsApp
+            </a>
+          </div>
         )}
       </CardFooter>
     </Card>
