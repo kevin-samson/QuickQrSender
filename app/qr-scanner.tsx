@@ -75,12 +75,6 @@ const QRScanner = () => {
         { facingMode: "environment" },
         {
           fps: 10,
-          qrbox: (viewfinderWidth, viewfinderHeight) => {
-            const minEdgePercentage = 0.7; // 70%
-            const minEdgeSize = Math.min(viewfinderWidth, viewfinderHeight);
-            const qrboxSize = Math.floor(minEdgeSize * minEdgePercentage);
-            return { width: qrboxSize, height: qrboxSize };
-          },
         },
         onScanSuccess,
         onScanError
